@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link defer rel="stylesheet" href="Main.css" />
+    </head>
+<body>
+    <div class="search" style="width: 50%;">
+        <h2>Video Search</h2>
+        <form>
+        <input type="text" id="searchInput" placeholder="Enter your search query">
+        <input type="button" id="searchButton" value="Search"></button>
+        <div id="searchResults"></div>
+    </form>
+    </div>
+
+</body>
+<script>
+    // Replace 'YOUR_API_KEY' with your actual API key
+    const API_KEY = 'AIzaSyDiDKImHuDaRI2CftpUq1LxU0B3Y3_AjyE';
+    const BASE_URL = 'https://www.googleapis.com/youtube/v3/search';
+
+    document.getElementById('searchButton').addEventListener('click', searchYouTube);
+
+    function searchYouTube() {
+        const query = document.getElementById('searchInput').value;
+        const maxResults = 10; // You can adjust this as needed
+
+        const url = `${BASE_URL}?part=snippet&key=${API_KEY}&q=${query}&maxResults=${maxResults}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => displayResults(data.items))
+            .catch(error => console.error('Error:', error));
+    }
+
+    function displayResults(videos) {
+        const resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = '';
+
+        videos.forEach(video => {
+            const videoLink = `https://www.youtube.com/watch?v=${video.id.videoId}`;
+            const videoTitle = video.snippet.title;
+
+            const videoElement = document.createElement('div');
+            videoElement.innerHTML = `
+                <a href="${videoLink}" target="_blank">${videoTitle}</a>
+                <p></p>`;
+
+            resultsDiv.appendChild(videoElement);
+        });
+    }
+                    
+    let VideoQueue = [];
+    let TitleQueue = ["",];
+    let VideoLink;
+    let VideoSource = "";
+    let Arrayindex = 1;
+                
+    function AddtoQueue(){
+        let QueueList = document.getElementById("QueueList");
+        let ListItem = document.createElement("li");
+        VideoQueue.push(document.getElementById("SearchBar").value);
+        console.log(VideoQueue);
+        //create a list item element in QueueList
+        ListItem.setAttribute("id", "QueueItem");
+        ListItem.innerHTML = VideoQueue[VideoQueue.length-1];
+        Arrayindex++;
+        QueueList.appendChild(ListItem); //This adds the list item to the list
+        document.getElementById("SearchBar").value = "";
+    }
+    function playNextVideo() {
+        if (VideoQueue.length > 0) {
+            VideoLink = GetCodeFromLink(VideoQueue.shift());
+            VideoSource = "https://www.youtube.com/embed/" + VideoLink;
+            document.getElementById("VideoPlayer").src = VideoSource;
+            let QueueList = document.getElementById("QueueList");
+            QueueList.removeChild(QueueList.firstChild);
+        }
+    }
+    
+    function GetCodeFromLink(link){
+        let videoID = link.match(/(?<=v=)[^&]+/)[0];
+        return videoID;
+    }
+</script>
+<hr>
+<h2>Video changer:</h2>
+<form>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
+    <input type="text" id="SearchBar" placeholder="Video link">
+    <!--<input type="button" id="Test" onclick="CheckedBox()" value="Test">-->
+    <br>
+    <input type="button" id="SearchButton" onclick="AddtoQueue()" value="Add to Queue">
+    <input type="button" id="NextButton" onclick="playNextVideo()" value="Next Video">
+    <!--<div><b><label>Video Code?</label><input type="checkbox" id="VideoCodeCheck" name="VideoCodeCheck"></div></b></form>-->
+</form>
+    <h2>Video:</h2>
+    <div class="Player">
+        <h2 id="Title"></h2>
+        <iframe id="VideoPlayer" style="margin-top: 3%;"width="1000px" height="600px" src="https://www.youtube.com/embed/JPxfAYYo7NA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+    <div class="Queue">
+        <h2>Queue:</h2>
+        <ul id="QueueList">
+
+        </ul>
+    </div>
+</html>
+
+
