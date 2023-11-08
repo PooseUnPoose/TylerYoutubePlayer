@@ -7,4 +7,6 @@ Queue Persists through
 
 Clean Appearance
 
+Search by Channel name || top 5 videos
+
 ====================================================================================
