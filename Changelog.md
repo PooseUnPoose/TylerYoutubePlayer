@@ -11,4 +11,10 @@
   
   
 ====================================================================================
+29-12-2023
 
+Video search thumbnails added
+
+
+
+♂ Morrowind - Nerevar Rising♂ is now the default video
